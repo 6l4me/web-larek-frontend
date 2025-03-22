@@ -29,6 +29,13 @@
     }
   }
 
+  &_modal {
+    &:hover {
+      background-color: inherit;
+      cursor: default;
+    }
+  }
+
   &__column {
     @include mixins.flex(column);
     align-items: flex-start;

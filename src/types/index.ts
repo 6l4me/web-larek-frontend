@@ -18,6 +18,7 @@ export interface IBasketItem { // тип для item в корзине
   id: string;
   title: string;
   price: number;
+  category: string;
 }
 
 export interface IBasket { // тип для всех items в корзине
@@ -34,9 +35,27 @@ export interface IOrderForm { // тип для Формы
   phone: string;
 }
 
-export interface IOrder { // общая сумма заказа
-  id: string;
-  total: number;
+export interface IOrderItem {
+    id: string;
+    title: string;
+    price: number;
+    count: number;
+}
+
+// Тип для отправки заказа на сервер
+export interface IOrderRequest {
+    payment: string;
+    email: string;
+    phone: string;
+    address: string;
+    total: number;
+    items: string[];
+}
+
+// Тип для ответа от сервера
+export interface IOrder {
+    id: string;
+    total: number;
 }
 
 export interface IPayment { // способ оплаты
