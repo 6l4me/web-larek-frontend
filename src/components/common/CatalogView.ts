@@ -1,8 +1,8 @@
 import { Component } from '../base/Component';
 import { IItemPreview } from '../../types';
-import { EventEmitter, IEvents } from '../base/events';
+import { EventEmitter } from '../base/events';
 import { cloneTemplate } from '../../utils/utils';
-import { CatalogItem } from './CatalogItem';
+import { CatalogCard } from './CatalogCard';
 import { AppData } from '../AppData';
 
 export class CatalogView {
@@ -26,43 +26,30 @@ export class CatalogView {
       this.container.innerHTML = '';
       
       items.forEach(item => {
-          const card = new CatalogItem(cloneTemplate(cardTemplate), {
-              onClick: () => this.events.emit('product:selected', { productId: item.id })
+          const card = new CatalogCard(cloneTemplate(cardTemplate), {
+              onClick: () => this.events.emit('product:selected', { productId: item.id }),
+              onButtonClick: () => {
+                  if (this.appData.isInCart(item.id)) {
+                      this.events.emit('cart:remove', { productId: item.id });
+                  } else {
+                      this.events.emit('cart:add', { product: item });
+                  }
+              }
           });
 
-          const cardElement = card.render({
+          card.render({
               title: item.title,
               image: item.image,
-              description: "",
               price: item.price,
               status: {
                   status: item.category,
                   label: item.category
-              }
+              },
+              buttonText: item.price === null ? 'Бесценно' : 
+                  this.appData.isInCart(item.id) ? 'Убрать' : 'Купить'
           });
-
-          // Добавляем кнопку купить/убрать
-          const button = cardElement.querySelector('.card__button') as HTMLButtonElement;
-          if (button) {
-              if (item.price === null) {
-                  // Для бесценных товаров
-                  button.textContent = 'Бесценно';
-                  button.disabled = true;
-              } else {
-                  // Для обычных товаров
-                  button.textContent = this.appData.isInCart(item.id) ? 'Убрать' : 'Купить';
-                  button.addEventListener('click', (e) => {
-                      e.stopPropagation();
-                      if (this.appData.isInCart(item.id)) {
-                          this.events.emit('cart:remove', { productId: item.id });
-                      } else {
-                          this.events.emit('cart:add', { product: item });
-                      }
-                  });
-              }
-          }
           
-          this.container.appendChild(cardElement);
+          this.container.appendChild(card.htmlElement);
       });
   }
 }

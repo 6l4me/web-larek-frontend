@@ -15,6 +15,7 @@
 
   &_active {
     display: flex;
+    position: fixed
   }
 
   &__container {
@@ -25,7 +26,7 @@
     // min-height: 90vmin;
     border-radius: 3rem;
     box-sizing: border-box;
-    position: relative;
+    position: fixed;
   }
 
   &__content {
